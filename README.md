@@ -27,8 +27,9 @@ TODO:
 20. Write a query to get the list of customers, and quantity of ordered product for the most recent shipped date, and most the highest quantity of orders. 
 21. Write SQL query to fetch customers  having a payment amount greater than or equal to 5000 and less than or equal 10000, ordered by desc.
 22. Write SQL query to fetch number of customers having the most popular sales representative.
-
-
+23. Write SQL query to fetch Customer name, Third highest Customer's payment amount, where customers employer office code is 4
+24. Write SQL query to fetch Employer first name, last name whose customers have the lowest credit limit. 
+25. Write SQL query to fetch Employer first name, last name whose customers have the average credit limit. 
 
 
 =================ANSWERS (TO BE DELETED)=================
@@ -130,6 +131,29 @@ join classicmodels.employees e
 on c.salesRepEmployeeNumber = e.employeeNumber
 group by e.firstName
 order by numberOfCustomers desc
-limit 1
-
+limit 1;
+# 23
+SELECT distinct customerName,p.amount,officeCode FROM
+( SELECT c.customerName,p.amount,e.officeCode from
+classicmodels.customers c
+join classicmodels.payments p
+on c.customerNumber = p.customerNumber
+join classicmodels.employees e
+on c.salesRepEmployeeNumber = e.employeeNumber
+where officeCode=4
+order by amount desc limit 3
+)  AS p
+ORDER BY amount LIMIT 1;
+# 24
+select firstName,lastName,creditLimit
+from classicmodels.employees e
+join classicmodels.customers c
+on e.employeeNumber = c.salesRepEmployeeNumber
+order by c.creditLimit asc limit 1;
+# 25
+select firstName,lastName,avg(creditLimit) as avgSalary
+from classicmodels.employees e
+join classicmodels.customers c
+on e.employeeNumber = c.salesRepEmployeeNumber
+group by firstName, lastName;
 ```
