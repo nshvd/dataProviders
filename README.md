@@ -3,8 +3,8 @@
 TODO: 
 1. WRITE SQL QUERIES USING BEST PRACTICES.
 2. DISCUSS WITH GROUP EACH SQL FUNCTION (Why,When and How the functions are being used).
+````
 
-=====
 1. Write an SQL query to fetch the employees whose first name begins with any one characters, followed by a text “ar” and ending with any sequence of characters.
 2.Write an SQL query to fetch all the orderNumbers which are present in either of the tables – ‘orderdetails’ and ‘orders’.
 3.Write an SQL query to fetch common records between two tables - ‘orderdetails’ and ‘orders’.
@@ -14,7 +14,7 @@ TODO:
 7.Write an SQL query to find the current date-time.
 8.Write an SQL query to fetch all Orders records from orders table who do not have a comments and shippedDate records in Orders table.
 9. Write an SQL query to fetch all the Employees with officeCode from Offices table.
-10.Write an SQL query to fetch duplicate first name records from an Employee table
+10.Write an SQL query to fetch duplicate first name records from an Employee table.
 11.Write an SQL query to create an empty table named newProductLines with the same structure as productlines table.
 12.Write an SQL query to fetch top n records from products table?
 13.There are products table which contains two columns productName and quantityInStock, you need to find all the products, whose quantity are greater than average quantity i.e. list of above average products.
@@ -30,7 +30,7 @@ TODO:
 23. Write SQL query to fetch Customer name, Third highest Customer's payment amount, where customers employer office code is 4
 24. Write SQL query to fetch Employer first name, last name whose customers have the lowest credit limit. 
 25. Write SQL query to fetch Employer first name, last name whose customers have the average credit limit. 
-
+````
 
 =================ANSWERS (TO BE DELETED)=================
 
@@ -62,7 +62,7 @@ WHERE state IS NULL;
 SELECT NOW();
 # 8
 SELECT * FROM classicmodels.orders
-where comments is not null and shippedDate is not null;
+where comments is null and shippedDate is null;
 # 9
 SELECT distinct E.firstName,E.officeCode
 FROM classicmodels.employees E
@@ -111,7 +111,6 @@ SELECT firstName, addressLine1,phone
 from classicmodels.employees e
 join classicmodels.offices
 on e.officeCode = offices.officeCode;
-
 # 20
 select distinct customerName,quantityOrdered,shippedDate
 from classicmodels.customers c
