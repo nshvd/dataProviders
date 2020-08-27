@@ -76,5 +76,14 @@ public class Orders implements Comparable<Orders> {
         return this.getId().compareTo(o.getId());
     }
 
-
+    @Override
+    public String toString() {
+        return "Orders{" +
+                "id=" + id +
+                ", order_placed_at='" + order_placed_at + '\'' +
+                ", order_status=" + order_status +
+                ", order_updated_at='" + order_updated_at + '\'' +
+                ", custom_user_id=" + custom_user_id +
+                '}';
+    }
 }

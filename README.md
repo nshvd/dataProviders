@@ -1,7 +1,7 @@
 # DBGroupProject
 
 TODO: 
-1. In DataBaseUtils class implement following methods: 
+ 1. In DataBaseUtils class implement following methods: 
  - connectToDatabase()
  - executeQuery()
  - executeUpdate()
@@ -10,6 +10,7 @@ TODO:
  2. In BeanHelper implement  following methods: 
  - getBeanPropertyNames()
  3. In beans package implement 3 following Bean classes:
+ Override equals(), hashCode() and compareTo() methods so that we can compare to objects with each other based on the instance variable values rather than memory pointers.
  - CartItems
  - Food
  - Orders
@@ -25,3 +26,10 @@ TODO:
  - Update order status in orders table based on id
  - Remove food record in food table based on id
  - Remove orders record in orders table that was placed after "2020-01-12"
+ 
+ Warning: We should refrain from exposing any sensitive passwords in the repo.
+ So do not put password in properties file. Use VM arguments for passing password on the fly.
+ 
+ 
+ VM options: -DdbPassword=yourpassword
+ in code you can use System.getProperty("dbPassword");

@@ -26,12 +26,13 @@ public class DataBaseUtils {
 //        TODO: IMPLEMENT HERE...
         try {
 
-            connection = DriverManager.getConnection(Config.getPropertiesValue("url"), Config.getPropertiesValue("user"), Config.getPropertiesValue("password"));
+            connection = DriverManager.getConnection(Config.getPropertiesValue("url"), Config.getPropertiesValue("user"), System.getProperty("dbPassword"));
             System.out.println("Establishing Database Connection to: " + Config.getPropertiesValue("url"));
             statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_UPDATABLE);
             queryRunner = new QueryRunner();
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new Exception("Connection to database refused: " + Config.getPropertiesValue("url"));
         }
     }

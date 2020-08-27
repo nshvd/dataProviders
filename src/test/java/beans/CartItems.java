@@ -66,6 +66,13 @@ public class CartItems implements Comparable< CartItems >{
             return id;
         }
 
-
-
+    @Override
+    public String toString() {
+        return "CartItems{" +
+                "id=" + id +
+                ", quantity=" + quantity +
+                ", total_price=" + total_price +
+                ", food_id=" + food_id +
+                '}';
+    }
 }

@@ -12,9 +12,16 @@ import utils.db.DataBaseUtils;
 import java.sql.SQLException;
 import java.util.*;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class DataBaseValidationSteps {
 
-           //TODO: IMPLEMENT HERE
+    //TODO: IMPLEMENT HERE
+
+    //this is needed for deleting related table with primary and foreign key.
+    private static final String DISABLE_FOREIGNKEY_CHECKS_QUERY = "SET FOREIGN_KEY_CHECKS = 0;";
+    private static final String ENABLE_FOREIGNKEY_CHECKS_QUERY = "SET FOREIGN_KEY_CHECKS = 1;";
 
     private String QUERY;
     private List<Map<String, Object>> databaseResult;
@@ -27,31 +34,29 @@ public class DataBaseValidationSteps {
     @Given("^remove all records from a \"([^\"]*)\" table$")
     public void removeAllRecordsFromATable(String table) throws Throwable {
 
-        QUERY = "SET FOREIGN_KEY_CHECKS = 0;";
-        DataBaseUtils.executeQuery(QUERY);
+        DataBaseUtils.executeQuery(DISABLE_FOREIGNKEY_CHECKS_QUERY);
         QUERY = "TRUNCATE table " + table + ";";
         DataBaseUtils.executeQuery(QUERY);
-        QUERY = "SET FOREIGN_KEY_CHECKS = 1;";
-        DataBaseUtils.executeQuery(QUERY);
+        DataBaseUtils.executeQuery(ENABLE_FOREIGNKEY_CHECKS_QUERY);
         databaseResult = DataBaseUtils.executeQuery("select * from " + table + ";");
-        Assert.assertTrue("FAILED: Table is not empty", databaseResult.isEmpty());
+        assertTrue("FAILED: Table is not empty", databaseResult.isEmpty());
     }
 
 
     @Given("^Add new data in the cart_items tables$")
     public void addNewDataInTheCart_itemsTables(List<CartItems> cartItems) throws SQLException {
 
+        DataBaseUtils.executeQuery(DISABLE_FOREIGNKEY_CHECKS_QUERY);
         QUERY = "INSERT INTO cart_item VALUES(?, ?, ?, ?);";
 
         for (CartItems cart_item : cartItems) {
             DataBaseUtils.executeInsert(QUERY, cart_item, BeanHelper.getBeanPropertyNames(CartItems.class));
         }
-
-
+        DataBaseUtils.executeQuery(ENABLE_FOREIGNKEY_CHECKS_QUERY);
     }
 
-    @Then("^verify that new data has been inserted into the cart item table$")
-    public void verifyThatNewDataHasBeenInsertedIntoTheTable(List<CartItems> items) throws SQLException {
+    @Then("^verify that the cart item table has the following data$")
+    public void verifyTheCartTable(List<CartItems> items) throws SQLException {
         QUERY = "select * from cart_item order by id;";
         databaseResult = DataBaseUtils.executeQuery(QUERY);
 
@@ -61,12 +66,8 @@ public class DataBaseValidationSteps {
         Collections.sort(cartItems);
         Collections.sort(cartItemsFromDB);
 
-        if (cartItemsFromDB.size() == cartItems.size()) {
-            Assert.assertTrue("Failed: Mismatch in data",cartItems.equals(cartItemsFromDB));
-        } else {
-            Assert.fail("Failed: Mismatch in lists size");
-        }
-
+        assertEquals("Failed: Mismatch in lists size",cartItems.size(), cartItemsFromDB.size());
+        assertEquals("Failed: Mismatch in data", cartItems, cartItemsFromDB);
     }
 
     @Given("^Add new data in the food tables$")
@@ -76,66 +77,60 @@ public class DataBaseValidationSteps {
         for (Food food : foods) {
             DataBaseUtils.executeInsert(QUERY, food, BeanHelper.getBeanPropertyNames(Food.class));
         }
-
     }
 
-    @Then("^verify that new data has been inserted into the food table$")
-    public void verifyThatNewDataHasBeenInsertedIntoTheFoodTable(List<Food> foods) throws SQLException {
+    @Then("^verify that food table has the following food data$")
+    public void verifyTheFoodTable(List<Food> foods) throws SQLException {
         QUERY = "select * from food order by id;";
         databaseResult = DataBaseUtils.executeQuery(QUERY);
 
-        List<Food> expected = DataBaseUtils.executeQueryToBean(Food.class, QUERY);
+        List<Food> actual = DataBaseUtils.executeQueryToBean(Food.class, QUERY);
 
-        List<Food> actual = new ArrayList<>(foods);
+        List<Food> expected = new ArrayList<>(foods);
         Collections.sort(actual);
         Collections.sort(expected);
 
-        if (expected.size() == actual.size()) {
-            Assert.assertTrue("Failed: Mismatch in data",actual.equals(expected));
-        } else {
-            Assert.fail("Failed: Mismatch in lists size");
-        }
+        assertEquals("Failed: Mismatch in lists size",expected.size(), actual.size());
+        assertEquals("Failed: Mismatch in data", expected, actual);
     }
 
     @Given("^Add new data in the orders tables$")
     public void addNewDataInTheOrdersTables(List<Orders> orders) throws SQLException {
-         QUERY = "INSERT INTO orders VALUES(?, ?, ?, ?, ?);";
+        DataBaseUtils.executeQuery(DISABLE_FOREIGNKEY_CHECKS_QUERY);
+        QUERY = "INSERT INTO orders VALUES(?, ?, ?, ?, ?);";
 
         for (Orders order : orders) {
             DataBaseUtils.executeInsert(QUERY, order, BeanHelper.getBeanPropertyNames(Orders.class));
         }
-
+        DataBaseUtils.executeQuery(ENABLE_FOREIGNKEY_CHECKS_QUERY);
     }
 
-    @Then("^verify that new data has been inserted into the orders table$")
-    public void verifyThatNewDataHasBeenInsertedIntoTheOrdersTable(List<Orders> orders) throws SQLException {
+    @Then("^verify that orders table has the following orders$")
+    public void verifyThatOrdersTableHasTheFollowingOrders(List<Orders> orders) throws SQLException {
         QUERY = "select * from orders order by id;";
         databaseResult = DataBaseUtils.executeQuery(QUERY);
 
-        List<Orders> expected = DataBaseUtils.executeQueryToBean(Orders.class, QUERY);
+        List<Orders> actual = DataBaseUtils.executeQueryToBean(Orders.class, QUERY);
 
-        List<Orders> actual = new ArrayList<>(orders);
+        List<Orders> expected = new ArrayList<>(orders);
         Collections.sort(actual);
         Collections.sort(expected);
 
-        if (expected.size() == actual.size()) {
-            Assert.assertTrue("Failed: Mismatch in data",actual.equals(expected));
-        } else {
-            Assert.fail("Failed: Mismatch in lists size");
-        }
+        assertEquals("Failed: Mismatch in lists size",expected.size(), actual.size());
+        assertEquals("Failed: Mismatch in data", expected, actual);
     }
 
     @Given("^update price to \"([^\"]*)\" in food table for food id \"([^\"]*)\"$")
     public void updatePriceToInFoodTableForFoodId(Double price, int id) throws Throwable {
         QUERY = "UPDATE food SET price = ? WHERE id = ?;";
-        DataBaseUtils.executeUpdate(QUERY,price,id);
+        DataBaseUtils.executeUpdate(QUERY, price, id);
 
-        QUERY = "select * from food where id = "+id+";";
+        QUERY = "select * from food where id = " + id + ";";
 
         List<Food> actual = DataBaseUtils.executeQueryToBean(Food.class, QUERY);
-        for (Food food: actual) {
-            if(food.getId()==id){
-                Assert.assertEquals("Price did not match",price,food.getPrice());
+        for (Food food : actual) {
+            if (food.getId() == id) {
+                Assert.assertEquals("Price did not match", price, food.getPrice());
                 break;
             }
         }
@@ -144,16 +139,16 @@ public class DataBaseValidationSteps {
 
     @Given("^update order status to \"([^\"]*)\" in food table of order id \"([^\"]*)\"$")
     public void updateOrderStatusToInFoodTableOfOrderId(int status, int id) throws Throwable {
-       QUERY = "UPDATE orders SET order_status = ? WHERE id = ? ;";
+        QUERY = "UPDATE orders SET order_status = ? WHERE id = ? ;";
 
-       DataBaseUtils.executeUpdate(QUERY,status,id);
+        DataBaseUtils.executeUpdate(QUERY, status, id);
 
-        QUERY = "select * from orders where id = "+id+";";
+        QUERY = "select * from orders where id = " + id + ";";
 
         List<Orders> actual = DataBaseUtils.executeQueryToBean(Orders.class, QUERY);
-        for (Orders orders: actual) {
-            if(orders.getId()==id){
-                Assert.assertEquals("Order status did not match",status,orders.getOrder_status().intValue());
+        for (Orders orders : actual) {
+            if (orders.getId() == id) {
+                Assert.assertEquals("Order status did not match", status, orders.getOrder_status().intValue());
                 break;
             }
         }
@@ -162,32 +157,25 @@ public class DataBaseValidationSteps {
 
     @Given("^remove food record with food id \"([^\"]*)\"$")
     public void removeFoodRecordWithFoodId(int id) throws Throwable {
-        QUERY = "SET FOREIGN_KEY_CHECKS = 0;";
-        DataBaseUtils.executeQuery(QUERY);
+        DataBaseUtils.executeQuery(DISABLE_FOREIGNKEY_CHECKS_QUERY);
         QUERY = "DELETE FROM food WHERE id=?;";
-        DataBaseUtils.executeUpdate(QUERY,id);
-        QUERY = "SET FOREIGN_KEY_CHECKS = 1;";
-        DataBaseUtils.executeQuery(QUERY);
+        DataBaseUtils.executeUpdate(QUERY, id);
+        DataBaseUtils.executeQuery(ENABLE_FOREIGNKEY_CHECKS_QUERY);
 
-        QUERY = "select * from food where id = "+id+";";
+        QUERY = "select * from food where id = " + id + ";";
         List<Food> actual = DataBaseUtils.executeQueryToBean(Food.class, QUERY);
-        Assert.assertTrue(actual.isEmpty());
+        assertTrue(actual.isEmpty());
     }
 
     @Given("^remove order's records that was placed after \"([^\"]*)\"$")
-    public void removeOrderSRecordsThatWasPlacedAfter(String arg0) throws Throwable {
-        QUERY = "select * from orders where order_placed_at > "+arg0+";";
+    public void removeOrderSRecordsThatWasPlacedAfter(String time) throws Throwable {
+        QUERY = "select * from orders where order_placed_at > '" + time + "';";
         List<Orders> orders = DataBaseUtils.executeQueryToBean(Orders.class, QUERY);
-        Assert.assertFalse("Failed: Cannot perform delete operation on empty orders record",orders.isEmpty());
+        Assert.assertFalse("Failed: Cannot perform delete operation on empty orders record", orders.isEmpty());
         QUERY = "DELETE FROM orders WHERE id=?;";
 
-        for(Orders order:orders){
-         DataBaseUtils.executeUpdate(QUERY,order.getId());
+        for (Orders order : orders) {
+            DataBaseUtils.executeUpdate(QUERY, order.getId());
         }
-
-        QUERY = "select * from orders where order_placed_at > "+arg0+";";
-        List<Orders> deleted = DataBaseUtils.executeQueryToBean(Orders.class, QUERY);
-        Assert.assertTrue("Failed: Delete operation was not successfull",deleted.isEmpty());
-
     }
 }

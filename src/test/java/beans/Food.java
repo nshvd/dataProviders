@@ -85,4 +85,16 @@ public class Food implements Comparable< Food > {
             return id;
         }
 
+    //To see the data in Error messages
+    @Override
+    public String toString() {
+        return "Food{" +
+                "id=" + id +
+                ", description='" + description + '\'' +
+                ", food_type=" + food_type +
+                ", image_url='" + image_url + '\'' +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                '}';
+    }
 }
