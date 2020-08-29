@@ -8,7 +8,12 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
         features = {"classpath:features"},
         glue = {"steps"},
-        tags = {"@Regression", "~@ignore"}
+        tags = {"@Regression", "~@ignore"},
+        plugin = {"json:target/cucumber.json"}, //is responsible for creating(generating) junit reports in json format
+        //which is needed for cucumber reports to create the statistics of the tests.
+        format = {"pretty", "html:target/reports"} //format option is used for
+        //generating cucumber html reports from cucumber.json file
+        //html -is a face of the webpage. it's used for creating webpages. static webpage.
 )
 
 public class RegressionRunner {
