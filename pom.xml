@@ -6,7 +6,8 @@
 
     <groupId>com.devxschool</groupId>
     <artifactId>DBGroupProject</artifactId>
-    <version>1.0-SNAPSHOT</version>g
+    <version>1.0-SNAPSHOT</version>
+
     <dependencies>
 
         <dependency>
