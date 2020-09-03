@@ -14,6 +14,7 @@ User should submit the following fields in order to successfully register to Foo
  - username
  - password
  - fullname
+ - email
  - address
  - city
  - state
