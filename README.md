@@ -67,7 +67,31 @@ Then verify that user information successfully saved in DB
 Example response body: 
 ```json
 {
-"status": "User registration successful"
+    "status": "User registration successful",
+    "errorMessage": null,
+    "userInfo": {
+        "password": "$2a$10$fnkQLejKQiJrXtioCXAD/OffRvLb6EHPyQ1Yfgo5dUtfFVvf6h9HG",
+        "username": "John",
+        "accountNonExpired": true,
+        "accountNonLocked": true,
+        "credentialsNonExpired": true,
+        "enabled": true,
+        "authorities": [
+            {
+                "authority": "USER"
+            }
+        ],
+        "userProfile": {
+            "id": 49,
+            "email": null,
+            "fullName": "John Doe",
+            "address": "123 main st",
+            "city": "Chicago",
+            "state": "IL",
+            "zip": "60625",
+            "phone": "112131321"
+        }
+    }
 }
 ```
 -------
@@ -87,7 +111,9 @@ Then verify that user information successfully saved in DB
 Example response body: 
 ```json
 {
-"status": "Username unavailable. Please choose another one."
+    "status": "Bad Request Body",
+    "errorMessage": "Username unavailable. Please choose another one",
+    "userInfo": null
 }
 ```
 ------
@@ -115,7 +141,9 @@ Then verify that user information is not saved in DB
 Example response body: 
 ```json
 {
-"status": "Username cannot be null or empty."
+    "status": "Bad Request Body",
+    "errorMessage": "Username cannot be null or empty",
+    "userInfo": null
 }
 ```
 ------
@@ -143,7 +171,9 @@ Then verify that user information is not saved in DB
 Example response body: 
 ```json
 {
-"status": "Fullname cannot be null or empty."
+    "status": "Bad Request Body",
+    "errorMessage": "Fullname cannot be null or empty",
+    "userInfo": null
 }
 ```
 -------
@@ -157,7 +187,7 @@ And User data should not be stored in DB
 ##### Scenario 1:
 ```gherkin
 Given user registers to food delivery app without password
-Then verify that status code is 400
+Then verify that status code is 500
 Then verify that response message is "Password cannot be null or empty."
 Then verify that user information is not saved in DB
 
@@ -165,7 +195,7 @@ Then verify that user information is not saved in DB
 ##### Scenario 2:
 ```gherkin
 Given user registers to food delivery app empty password
-Then verify that status code is 400
+Then verify that status code is 500
 Then verify that response message is "Password cannot be null or empty."
 Then verify that user information is not saved in DB
 
@@ -173,6 +203,10 @@ Then verify that user information is not saved in DB
 Example response body: 
 ```json
 {
-"status": "Password cannot be null or empty."
+    "timestamp": "2020-09-03T18:51:40.371+0000",
+    "status": 500,
+    "error": "Internal Server Error",
+    "message": "rawPassword cannot be null",
+    "path": "/user/registration"
 }
 ```
