@@ -3,7 +3,7 @@
 
 **TODO:**
 `Test all functionalities based on the requirements below.
- Manually test each requirement in Postman, validate API Responses and records in Database.
+ Manually test each requirement in Postman, validate API Responses and records in Database(food_delivery_db1 schema)
 `
 ---
 
@@ -40,7 +40,7 @@ User should submit the following fields in order to successfully register to Foo
  
  API Endpoint: 
  ```json
-  http://ec2-18-218-51-74.us-east-2.compute.amazonaws.com:8080/user/register
+  http://3.131.35.165:8081/user/registration
  ```
  Request body:
  ```json
