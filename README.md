@@ -1,212 +1,322 @@
 # FOOD DELIVERY API 
-## _Register_ functionality 
+## _FOOD_ functionality 
 
 **TODO:**
 `Test all functionalities based on the requirements below.
- Manually test each requirement in Postman, validate API Responses and records in Database(food_delivery_db1 schema)
+ Manually test each requirement in Postman, validate API Responses 
+ and records in Database(food_delivery_db1 schema)
 `
----
 
-> User Story:
-> 
-> As a User I want to be able to register to the app, so I can use the food delivery service.
-
->Functionalities:
->
--------
 ####Functionality 1. 
+####TODO: Write test cases(scenarios) and execute them manually. Validate each enpoint. Check logs for each enpoint as well. 
 
-User should submit the following fields in order to successfully register to FoodDelivery app:
- - username
- - password
- - fullname
- - email
- - address
- - city
- - state
- - zip
- - phone
- 
- Once user has been successfully registered, all submitted information should be saved in food_delivery_db schema in DB and 
- following tables: custom_user, user_profile. Write a query to fetch username,password,fullname,address,city,state,zip,phone from custom_user and user_profile tables.
- 
+User should be able to ADD food: 
+
+ API Endpoint: 
+```json
+  http://localhost:8083/food/cache/add
+```
+   Fields: 
+ - description (not required)
+ - imageUrl (required)
+ - price(required)
+ - name(required)
+ - foodType(required)
  -----------
- 
+ If User adds food without required fields, user should see the following messages: 
+ 1. Invalid request - Food image url cannot be null or empty.
+ 2. Invalid request - Food price cannot be null or empty.
+ 3. Invalid request - Food name cannot be null or empty.
+ 4. Invalid request - Food type cannot be null or empty.
+
+> Note: 
+> Food Type can only be:     
+        Beverages,
+        Appetizers,
+        MainDish.
+>
+If User adds food with invalid food type then user should see the error message.
+
+
  See following example to test manually:
  
- Allowed HTTPs request to register a user:
+ Allowed HTTPs request to add food:
   
   **`POST`**
  
- API Endpoint: 
- ```json
-  http://3.131.35.165:8081/user/registration
- ```
+
  Request body:
  ```json
 {
-	"username":"John",
-	"password": "Test123",
-	"fullName": "John Doe",
-	"address": "123 main st",
-	"city": "Chicago",
-	"state": "IL",
-	"zip": "60625",
-	"phone": "112131321"
+	"description":"Wine",
+	"imageUrl": "https:foods.com",
+	"price": "20.00",
+	"name": "Merlot",
+	"foodType": "Beverages"
 }
 ```
+
 ##### Scenario 1:
 ```gherkin
-Given user registers to food delivery app with the following fields:
-|username|password| fullName|  address  |  city |state| zip |phone    |
-|John    |Test123 |John Doe |123 main st|Chicago| IL  |60625|112131321|
+Given add new food to FoodDelivery with the following fields
+|description|imageUrl       | price   |  name     |  foodType   |
+|Wine       |https:foods.com| 20.00   |  Merlot   |  Beverages  |
 Then verify that status code is 200
-Then verify that response message is "User registration successful."
-Then verify that user information successfully saved in DB
+Then verify that food has been successfully added
 ```
 Example response body: 
 ```json
 {
-    "status": "User registration successful",
-    "errorMessage": null,
-    "userInfo": {
-        "password": "$2a$10$fnkQLejKQiJrXtioCXAD/OffRvLb6EHPyQ1Yfgo5dUtfFVvf6h9HG",
-        "username": "John",
-        "accountNonExpired": true,
-        "accountNonLocked": true,
-        "credentialsNonExpired": true,
-        "enabled": true,
-        "authorities": [
-            {
-                "authority": "USER"
-            }
-        ],
-        "userProfile": {
-            "id": 49,
-            "email": null,
-            "fullName": "John Doe",
-            "address": "123 main st",
-            "city": "Chicago",
-            "state": "IL",
-            "zip": "60625",
-            "phone": "112131321"
+    "foodCached": [
+        {
+            "description": "Merlot",
+            "imageUrl": "https:foods.com",
+            "price": 20.00,
+            "name": "Merlot",
+            "foodType": "Beverages"
         }
-    }
+    ]
 }
 ```
--------
-####Functionality 2. 
 
-User tries to register with an existing username.
-And user should get corresponding error message "Username unavailable. Please choose another one.".
-And User data should not be stored in DB
+##### Scenario 2:
+```gherkin
+Given add new food to FoodDelivery without image url
+|description| price   |  name     |  foodType   |
+|Wine       | 20.00   |  Merlot   |  Beverages  |
+Then verify that status code is 403
+Then verify response error message "Invalid request - Food image url cannot be null or empty." 
+```
+Example response body: 
+```json
+{
+    "errorMessage": "Invalid request - Food image url cannot be null or empty."
+}
+```
+
+##### Scenario 3:
+```gherkin
+Given add new food to FoodDelivery without price
+|description| imageUrl        |  name     |  foodType   |
+|Wine       |https:foods.com  |  Merlot   |  Beverages  |
+Then verify that status code is 403
+Then verify response error message "Invalid request - Food price cannot be null or empty." 
+```
+Example response body: 
+```json
+{
+    "errorMessage": "Invalid request - Food price cannot be null or empty."
+}
+```
+##### Scenario 4:
+```gherkin
+Given add new food to FoodDelivery without name
+|description| imageUrl        |  price     |  foodType   |
+|Wine       |https:foods.com  |  20.00     |  Beverages  |
+Then verify that status code is 403
+Then verify response error message "Invalid request - Food name cannot be null or empty." 
+```
+Example response body: 
+```json
+{
+    "errorMessage": "Invalid request - Food name cannot be null or empty."
+}
+```
+##### Scenario 5:
+```gherkin
+Given add new food to FoodDelivery without food type
+|description| imageUrl        |  name     |  price   |
+|Wine       |https:foods.com  |  Merlot   |  20.00   |
+Then verify that status code is 403
+Then verify response error message "Invalid request - Food type cannot be null or empty." 
+```
+Example response body: 
+```json
+{
+    "errorMessage": "Invalid request - Food type cannot be null or empty."
+}
+```
+##### Scenario 6:
+```gherkin
+Given add new food to FoodDelivery with invalid food type
+|description| imageUrl        |  name     |  price   |foodType|
+|Wine       |https:foods.com  |  Merlot   |  20.00   | Soups  |
+Then verify that status code is 400
+Then verify response error message "Bad Request" 
+```
+Example response body: 
+```json
+{
+    "timestamp": "2020-09-10T15:04:57.408+0000",
+    "status": 400,
+    "error": "Bad Request",
+    "message": "JSON parse error: Cannot deserialize value of type `com.devxschool.food_delivery.models.Food$FoodType` from String \"Soups\": not one of the values accepted for Enum class: [MainDish, Beverages, Appetizers]; nested exception is com.fasterxml.jackson.databind.exc.InvalidFormatException: Cannot deserialize value of type `com.devxschool.food_delivery.models.Food$FoodType` from String \"Soups\": not one of the values accepted for Enum class: [MainDish, Beverages, Appetizers]\n at [Source: (PushbackInputStream); line: 6, column: 14] (through reference chain: com.devxschool.food_delivery.models.Food[\"foodType\"])",
+    "path": "/food/cache/add"
+}
+```
+
+-------
+####Functionality 2.
+####TODO: Write test cases(scenarios) and execute them manually. Validate each enpoint. Check logs for each enpoint as well. 
+ 
+User should be able to list all added foods.
+
+ API Endpoint: 
+```json
+  http://localhost:8083/food/cache/list
+```
+ Allowed HTTPs request to list food:
+  **`GET`**
+ 
 
 ##### Scenario 1:
 ```gherkin
-Given user registers to food delivery app with an existing username:
-Then verify that status code is 400
-Then verify that response message is "Username unavailable. Please choose another one."
-Then verify that user information successfully saved in DB
+Given user list all food in cache
+Then verify that status code is 200
+Then verify that response contains all cached foods
 ```
-Example response body: 
+Example response body: NOTE: The response will be based on what type and how many foods user have added
 ```json
 {
-    "status": "Bad Request Body",
-    "errorMessage": "Username unavailable. Please choose another one",
-    "userInfo": null
+    "numberOfFoodsInCache": 3,
+    "numberOfAppetizers": 1,
+    "numberOfMainDishes": 1,
+    "numberOfUnknownFood": 1,
+    "foodCached": [
+        {
+            "description": "Merlot",
+            "imageUrl": "https:foods.com",
+            "price": 20.00,
+            "name": "Merlot",
+            "foodType": "Beverages"
+        },
+        {
+            "description": "Turkish Baklava",
+            "imageUrl": "https:foods.com",
+            "price": 10.00,
+            "name": "Baklava",
+            "foodType": "Appetizers"
+        },
+        {
+            "description": "Smoked Salmon",
+            "imageUrl": "https:foods.com",
+            "price": 30.00,
+            "name": "Smoked Salmon",
+            "foodType": "MainDish"
+        }
+    ]
 }
 ```
 ------
 ####Functionality 3. 
-If user tries to register with empty or null username.
-Then following error message should occur: "Username cannot be null or empty."
-And User data should not be stored in DB
+####TODO: Write test cases(scenarios) and execute them manually. Validate each enpoint. Check logs for each enpoint as well. 
 
+User should be able to update food based on the provided name and field to update
+Note: Price's max limit is $125.00
+
+ API Endpoint: 
+```json
+http://localhost:8083/food/cache/update?name={food name}&field={fieldName}
+```
+ Allowed HTTPs request to update food:
+  **`PUT`**
+ 
 ##### Scenario 1:
 ```gherkin
-Given user registers to food delivery app with empty username
-Then verify that status code is 400
-Then verify that response message is "Username cannot be null or empty."
-Then verify that user information is not saved in DB
+Given user updates "T-Bone steak"'s price to 100.00 
+Then verify that status code is 200
+Then verify that price have been updated
 ```
-
-##### Scenario 2:
-```gherkin
-Given user registers to food delivery app with null username
-Then verify that status code is 400
-Then verify that response message is "Username cannot be null or empty."
-Then verify that user information is not saved in DB
-```
-
-Example response body: 
+Example Request body: 
 ```json
 {
-    "status": "Bad Request Body",
-    "errorMessage": "Username cannot be null or empty",
-    "userInfo": null
+	"description":"Steak",
+	"imageUrl": "https:foods.com",
+	"price": "100.00",
+	"name": "T-Bone steak",
+	"foodType": "MainDish"
 }
 ```
-------
-####Functionality 4. 
-If user tries to register with empty or null fullname.
-Then following error message should occur: "Fullname cannot be null or empty."
-And User data should not be stored in DB
+Example Response body:
 
-##### Scenario 1:
-```gherkin
-Given user registers to food delivery app with empty fullname
-Then verify that status code is 400
-Then verify that response message is "Fullname cannot be null or empty."
-Then verify that user information is not saved in DB
+```json
+{
+    "foodCached": [
+        {
+            "description": "Steak",
+            "imageUrl": "https:foods.com",
+            "price": 100.00,
+            "name": "T-Bone steak",
+            "foodType": "MainDish"
+        }
+    ]
+}
 ```
 
-##### Scenario 2:
+##### Scenario 2: 
 ```gherkin
-Given user registers to food delivery app with null fullname
-Then verify that status code is 400
-Then verify that response message is "Fullname cannot be null or empty."
-Then verify that user information is not saved in DB
+Given user updates "T-Bone steak"'s price to 125.50 
+Then verify that status code is 403
+Then verify that error message "Invalid request - Food price should be kept less than 125" is displayed
 ```
 
 Example response body: 
 ```json
 {
-    "status": "Bad Request Body",
-    "errorMessage": "Fullname cannot be null or empty",
-    "userInfo": null
+   
+   	"description":"Steak",
+   	"imageUrl": "https:foods.com",
+   	"price": "125.50",
+   	"name": "T-Bone steak",
+   	"foodType": "MainDish"
+   
+}
+```
+Example Request Body:
+```json
+{
+    "errorMessage": "Invalid request - Food price should be kept less than 125"
+}
+```
+
+------
+####Functionality 4.
+####TODO: Write test cases(scenarios) and execute them manually. Validate each enpoint.
+ Check logs for each enpoint as well. Validate data in food_delivery Database.
+ 
+User should be able to commit changes so that it saves cache to DB _food_ table.
+Some food can be excluded from being saved in DB.
+ API Endpoint: 
+```json
+http://localhost:8083/food/commit
+http://localhost:8083/food/commit?exclude={food name}
+
+```
+ Allowed HTTPs request to register a user:
+  **`POST`**
+ 
+##### Scenario 1:
+```gherkin
+Given user saves all chached food
+Then verify that status code is 200
+Then verify number of saved food
+Then verify response message "Food Cache is committed to db"
+Then verify that all food information is saved in DB
+```
+
+##### Scenario 2:
+```gherkin
+Given user saves all chached food excluding "Diet Coke"
+Then verify that status code is 200
+Then verify number of saved food
+Then verify response message "Food Cache is committed to db"
+Then verify that all food information is saved in DB
+```
+Example response body: 
+```json
+{
+    "numberOfFoodsSaved": 3,
+    "message": "Food Cache is committed to db"
 }
 ```
 -------
-
-####Functionality 5. 
-
-If user tries to register with empty or null password.
-Then following error message should occur: "Password cannot be null or empty".
-And User data should not be stored in DB
-
-##### Scenario 1:
-```gherkin
-Given user registers to food delivery app without password
-Then verify that status code is 500
-Then verify that response message is "Password cannot be null or empty."
-Then verify that user information is not saved in DB
-
-```
-##### Scenario 2:
-```gherkin
-Given user registers to food delivery app empty password
-Then verify that status code is 500
-Then verify that response message is "Password cannot be null or empty."
-Then verify that user information is not saved in DB
-
-```
-Example response body: 
-```json
-{
-    "timestamp": "2020-09-03T18:51:40.371+0000",
-    "status": 500,
-    "error": "Internal Server Error",
-    "message": "rawPassword cannot be null",
-    "path": "/user/registration"
-}
-```
