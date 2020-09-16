@@ -53,7 +53,7 @@ User should be able to ADD food:
  -----------
  If User adds food without required fields, user should see the following messages: 
  1. Invalid request - Food image url cannot be null or empty.
- 2. Invalid request - Food price cannot be null or empty.
+ 2. Invalid request - Food price cannot be negative nor zero.
  3. Invalid request - Food name cannot be null or empty.
  4. Invalid request - Food type cannot be null or empty.
 
@@ -64,9 +64,6 @@ User should be able to ADD food:
         MainDish.
 >
 If User adds food with invalid food type then user should see the error message.
-
-
- See following example to test manually:
  
  Allowed HTTPs request to add food:
   
@@ -101,7 +98,8 @@ Example response body:
 ```
 
 ##### Scenario 2:
-User should not be able to add food if image_url is null or empty
+User should not be able to add food if image_url is null or empty.
+
 Example response body: 
 ```json
 {
