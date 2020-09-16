@@ -10,7 +10,7 @@ public class Config {
     static final String FILE_PATH;
 
 	static {
-		FILE_PATH = "src/test/resources/properties/database.properties";
+		FILE_PATH = "src/test/resources/properties/food_delivery.properties";
 
 		FileInputStream input;
 

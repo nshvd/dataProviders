@@ -1,4 +1,4 @@
-package beans;
+package beans.db;
 
 /***
  *Create a Bean class Orders that has following fields:

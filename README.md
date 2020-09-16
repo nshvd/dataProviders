@@ -1,14 +1,42 @@
 # FOOD DELIVERY API 
 ## _FOOD_ functionality 
 
+>
+>note: 
+> Use food_delivery-2.0.1.jar version
+>
+> java -jar food_delivery-2.0.1.jar
+>
 **TODO:**
-`Test all functionalities based on the requirements below.
- Manually test each requirement in Postman, validate API Responses 
- and records in Database(food_delivery_db1 schema)
-`
+
+`  1. Write cucumber scenarios and automate it, based on the given requirements below.`
+
+`  2. Automate each REST API calls using restassured library`
+
+`  3. Validate REST API response messages using Hamcrest library`
+
+`  6. Automate validation of Database in food_delivery_db schema`
+
+`  4. For serialization/deserialization use Gson library`
+
+`  5. Set up and Log each acction using Log4j library`
+
+`  6. In RestApiUtils class implement following methods: requestSpecification(), addFood(), listCachedFood(), updateCachedFood(),commitCachedFood().
+ `
+ 
+ ` 7. Create and Implement Food and CachedFoodResponse pojo classes that will be used for serialization/deserialization proccesses`
+
+
+========================
+
+####NOTE: Create a step that resets all cached food. Add this step in the Background or Hooks, so it executes before each scenario.
+ API Endpoint: POST REQUEST (with no request body). This API call will reset the foodcache.
+```json
+  http://localhost:8083/food/resetcache
+```
 
 ####Functionality 1. 
-####TODO: Write test cases(scenarios) and execute them manually. Validate each enpoint. Check logs for each enpoint as well. 
+####TODO: Write test cases(scenarios) and automate them. Validate each endpoint. Check logs for each endpoint as well. 
 
 User should be able to ADD food: 
 
@@ -44,7 +72,8 @@ If User adds food with invalid food type then user should see the error message.
   
   **`POST`**
  
-
+##### Scenario 1:
+Happy path: User should be able to add food with the fields provided above: 
  Request body:
  ```json
 {
@@ -56,14 +85,6 @@ If User adds food with invalid food type then user should see the error message.
 }
 ```
 
-##### Scenario 1:
-```gherkin
-Given add new food to FoodDelivery with the following fields
-|description|imageUrl       | price   |  name     |  foodType   |
-|Wine       |https:foods.com| 20.00   |  Merlot   |  Beverages  |
-Then verify that status code is 200
-Then verify that food has been successfully added
-```
 Example response body: 
 ```json
 {
@@ -80,13 +101,7 @@ Example response body:
 ```
 
 ##### Scenario 2:
-```gherkin
-Given add new food to FoodDelivery without image url
-|description| price   |  name     |  foodType   |
-|Wine       | 20.00   |  Merlot   |  Beverages  |
-Then verify that status code is 403
-Then verify response error message "Invalid request - Food image url cannot be null or empty." 
-```
+User should not be able to add food if image_url is null or empty
 Example response body: 
 ```json
 {
@@ -95,27 +110,17 @@ Example response body:
 ```
 
 ##### Scenario 3:
-```gherkin
-Given add new food to FoodDelivery without price
-|description| imageUrl        |  name     |  foodType   |
-|Wine       |https:foods.com  |  Merlot   |  Beverages  |
-Then verify that status code is 403
-Then verify response error message "Invalid request - Food price cannot be null or empty." 
-```
+User should not be able to add food if food price is null or empty
+
 Example response body: 
 ```json
 {
-    "errorMessage": "Invalid request - Food price cannot be null or empty."
+    "errorMessage": "Invalid request - Food price cannot be negative nor zero."
 }
 ```
 ##### Scenario 4:
-```gherkin
-Given add new food to FoodDelivery without name
-|description| imageUrl        |  price     |  foodType   |
-|Wine       |https:foods.com  |  20.00     |  Beverages  |
-Then verify that status code is 403
-Then verify response error message "Invalid request - Food name cannot be null or empty." 
-```
+User should not be able to add food if food name is null or empty
+
 Example response body: 
 ```json
 {
@@ -123,13 +128,8 @@ Example response body:
 }
 ```
 ##### Scenario 5:
-```gherkin
-Given add new food to FoodDelivery without food type
-|description| imageUrl        |  name     |  price   |
-|Wine       |https:foods.com  |  Merlot   |  20.00   |
-Then verify that status code is 403
-Then verify response error message "Invalid request - Food type cannot be null or empty." 
-```
+User should not be able to add food if food type is null or empty
+
 Example response body: 
 ```json
 {
@@ -137,13 +137,12 @@ Example response body:
 }
 ```
 ##### Scenario 6:
-```gherkin
-Given add new food to FoodDelivery with invalid food type
-|description| imageUrl        |  name     |  price   |foodType|
-|Wine       |https:foods.com  |  Merlot   |  20.00   | Soups  |
-Then verify that status code is 400
-Then verify response error message "Bad Request" 
-```
+User should not be able to add food if invalid food type provided:
+> Food Type can only be:     
+        Beverages,
+        Appetizers,
+        MainDish.
+
 Example response body: 
 ```json
 {
@@ -157,7 +156,7 @@ Example response body:
 
 -------
 ####Functionality 2.
-####TODO: Write test cases(scenarios) and execute them manually. Validate each enpoint. Check logs for each enpoint as well. 
+####TODO: Write test cases(scenarios) and automate them. Validate each endpoint. Check logs for each endpoint as well. 
  
 User should be able to list all added foods.
 
@@ -170,12 +169,9 @@ User should be able to list all added foods.
  
 
 ##### Scenario 1:
-```gherkin
-Given user list all food in cache
-Then verify that status code is 200
-Then verify that response contains all cached foods
-```
-Example response body: NOTE: The response will be based on what type and how many foods user have added
+User should be able to list all cached food.
+
+Example response body: NOTE: The response will be based on what type and how much food user have added
 ```json
 {
     "numberOfFoodsInCache": 3,
@@ -209,7 +205,7 @@ Example response body: NOTE: The response will be based on what type and how man
 ```
 ------
 ####Functionality 3. 
-####TODO: Write test cases(scenarios) and execute them manually. Validate each enpoint. Check logs for each enpoint as well. 
+####TODO: Write test cases(scenarios) and automate them.  
 
 User should be able to update food based on the provided name and field to update
 Note: Price's max limit is $125.00
@@ -222,11 +218,8 @@ http://localhost:8083/food/cache/update?name={food name}&field={fieldName}
   **`PUT`**
  
 ##### Scenario 1:
-```gherkin
-Given user updates "T-Bone steak"'s price to 100.00 
-Then verify that status code is 200
-Then verify that price have been updated
-```
+User should be able to update food based on the provided name and field to update
+
 Example Request body: 
 ```json
 {
@@ -254,11 +247,8 @@ Example Response body:
 ```
 
 ##### Scenario 2: 
-```gherkin
-Given user updates "T-Bone steak"'s price to 125.50 
-Then verify that status code is 403
-Then verify that error message "Invalid request - Food price should be kept less than 125" is displayed
-```
+User should not be able to update food if price is over the limit.
+Note: Price's max limit is $125.00
 
 Example response body: 
 ```json
@@ -281,7 +271,7 @@ Example Request Body:
 
 ------
 ####Functionality 4.
-####TODO: Write test cases(scenarios) and execute them manually. Validate each enpoint.
+####TODO: Write test cases(scenarios) and automate them. Validate each enpoint.
  Check logs for each enpoint as well. Validate data in food_delivery Database.
  
 User should be able to commit changes so that it saves cache to DB _food_ table.
@@ -296,22 +286,11 @@ http://localhost:8083/food/commit?exclude={food name}
   **`POST`**
  
 ##### Scenario 1:
-```gherkin
-Given user saves all chached food
-Then verify that status code is 200
-Then verify number of saved food
-Then verify response message "Food Cache is committed to db"
-Then verify that all food information is saved in DB
-```
+User should be able to commit changes so that it saves a cache to DB _food_ table.
 
 ##### Scenario 2:
-```gherkin
-Given user saves all chached food excluding "Diet Coke"
-Then verify that status code is 200
-Then verify number of saved food
-Then verify response message "Food Cache is committed to db"
-Then verify that all food information is saved in DB
-```
+User should be able to commit changes with excluded food so that it saves a cache to DB _food_ table.
+
 Example response body: 
 ```json
 {

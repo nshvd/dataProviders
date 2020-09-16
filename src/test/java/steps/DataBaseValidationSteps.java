@@ -1,16 +1,19 @@
 package steps;
 
+import beans.db.CartItems;
+import beans.db.Food;
+import beans.db.Orders;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
-import beans.CartItems;
-import beans.Food;
-import beans.Orders;
 import org.junit.Assert;
 import utils.beanutils.BeanHelper;
 import utils.db.DataBaseUtils;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
