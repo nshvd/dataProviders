@@ -1,11 +1,6 @@
 package beans.restapi;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
-import java.io.Serializable;
 
 /**
  * TODO:
@@ -19,23 +14,11 @@ import java.io.Serializable;
  * Implement getters and setters.
  * */
 
-@Data
-@EqualsAndHashCode
-@ToString
-@Builder
+
 public class Food implements Comparable<Food> {
 //    TODO: Implement here...
 
-    private String description;
-    private String imageUrl;
-    private double price;
-    private String name;
-    private String foodType;
 
-    @Override
-    public int compareTo(Food o) {
-        return this.getName().compareTo(o.getName());
-    }
 
 
 }

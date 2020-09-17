@@ -1,10 +1,5 @@
 package beans.restapi;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.List;
 
 /**
  * TODO:
@@ -15,9 +10,7 @@ import java.util.List;
  * Implement getters and setters.
  * */
 
-@Data
 public class CachedFoodResponse {
 
-    private List<Food> foodCached;
 
 }

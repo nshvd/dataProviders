@@ -15,10 +15,7 @@ public class RestApiUtils {
      * @return RequestSpecification
      */
     public static RequestSpecification requestSpecification(){
-        return  given()
-                .accept(ContentType.JSON)
-                .and()
-                .contentType(ContentType.JSON);
+       return null;
     }
 
     /**
@@ -27,10 +24,7 @@ public class RestApiUtils {
      * @return Response
      */
     public static Response addFood(String jsonBody){
-        return requestSpecification()
-                .and()
-                .body(jsonBody)
-                .post("food/cache/add");
+        return null;
     }
 
     /**
@@ -39,9 +33,7 @@ public class RestApiUtils {
      * @return Response
      */
     public static Response listCachedFood(){
-        return requestSpecification()
-                .and()
-                .get("food/cache/list");
+        return null;
     }
 
     /**
@@ -51,12 +43,7 @@ public class RestApiUtils {
      * @return Response
      */
     public static Response updateCachedFood(String name, String fieldToUpdate,String jsonBody){
-        return requestSpecification()
-                .and()
-                .body(jsonBody)
-                .queryParam("name",name)
-                .queryParam("field",fieldToUpdate)
-                .put("food/cache/update");
+        return null;
     }
 
     /**
@@ -77,9 +64,6 @@ public class RestApiUtils {
      * @return Response
      */
     public static Response commitCachedFood(String excludedFoodName){
-        return requestSpecification()
-                .and()
-                .queryParam("exclude",excludedFoodName)
-                .post("food/commit");
+        return null;
     }
 }
