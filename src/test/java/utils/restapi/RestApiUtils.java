@@ -1,12 +1,17 @@
 package utils.restapi;
 
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import static io.restassured.RestAssured.given;
 
 public class RestApiUtils {
+
+    public static final Logger LOGGER = LogManager.getLogger(RestApiUtils.class);
 
     /**
      * TODO:
@@ -15,7 +20,12 @@ public class RestApiUtils {
      * @return RequestSpecification
      */
     public static RequestSpecification requestSpecification(){
-       return null;
+       RequestSpecification requestSpec = RestAssured.given();
+       requestSpec.contentType(ContentType.JSON);
+       requestSpec.accept(ContentType.JSON);
+       LOGGER.info("RequestSpecification was created.\n" +
+               "AcceptType,ContentType - Json");
+       return requestSpec;
     }
 
     /**
@@ -24,7 +34,9 @@ public class RestApiUtils {
      * @return Response
      */
     public static Response addFood(String jsonBody){
-        return null;
+        return requestSpecification()
+                .body(jsonBody)
+                .post("food/cache/add");
     }
 
     /**
@@ -33,7 +45,8 @@ public class RestApiUtils {
      * @return Response
      */
     public static Response listCachedFood(){
-        return null;
+        return requestSpecification()
+                .get("food/cache/list");
     }
 
     /**
@@ -43,7 +56,11 @@ public class RestApiUtils {
      * @return Response
      */
     public static Response updateCachedFood(String name, String fieldToUpdate,String jsonBody){
-        return null;
+        return requestSpecification()
+                .queryParam("name", name)
+                .queryParam("field", fieldToUpdate)
+                .body(jsonBody)
+                .put("food/cache/update");
     }
 
     /**
@@ -64,6 +81,12 @@ public class RestApiUtils {
      * @return Response
      */
     public static Response commitCachedFood(String excludedFoodName){
-        return null;
+        return requestSpecification()
+                .queryParam("exclude", excludedFoodName)
+                .post("food/commit");
+    }
+
+    public static Response resetCacheFoodAPI(){
+        return requestSpecification().post("food/resetcache");
     }
 }

@@ -18,7 +18,7 @@
             <AppenderRef ref="Console" />
         </Logger>
 
-        <Root level="error">
+        <Root level="info">
             <AppenderRef ref="Console" />
         </Root>
 
