@@ -26,7 +26,7 @@ public class DataBaseUtils {
 //        TODO: IMPLEMENT HERE...
         try {
 
-            connection = DriverManager.getConnection(Config.getPropertiesValue("url"), Config.getPropertiesValue("user"), System.getProperty("dbPassword"));
+            connection = DriverManager.getConnection(Config.getPropertiesValue("url"), Config.getPropertiesValue("user"), "Devx2020");
             System.out.println("Establishing Database Connection to: " + Config.getPropertiesValue("url"));
             statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_UPDATABLE);
             queryRunner = new QueryRunner();
