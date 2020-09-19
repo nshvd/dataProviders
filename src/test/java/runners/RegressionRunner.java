@@ -4,7 +4,7 @@ import beans.db.Food;
 import org.testng.annotations.Test;
 import utils.db.DataBaseUtils;
 import utils.io_utils.CSVWriter;
-import utils.io_utils.CSVReader;
+//import utils.io_utils.CSVReader;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -24,13 +24,19 @@ public class RegressionRunner {
 ////        writer.close();
 ////    }
 
+//    @Test
+//    public void t2() throws IOException{
+//        CSVReader reader = new CSVReader("./foods.csv");
+//        String line;
+//        while ((line = reader.read()) != null){
+//            System.out.println(new Food(line));
+//        }
+//        reader.close();
+//    }
+
     @Test
-    public void t2() throws IOException{
-        CSVReader reader = new CSVReader("./foods.csv");
-        String line;
-        while ((line = reader.read()) != null){
-            System.out.println(new Food(line));
-        }
-        reader.close();
+    public void t3() throws Exception {
+        DataBaseUtils.connectToDatabase();
+        Food.getAll().forEach(System.out::println);
     }
 }
