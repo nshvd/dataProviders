@@ -1,5 +1,10 @@
 package beans.db;
 
+import utils.db.DataBaseUtils;
+
+import java.sql.SQLException;
+import java.util.List;
+
 /***
  *Create a Bean class Food that has following fields:
  *  id, description, food_type, image_url,name,price
@@ -13,6 +18,18 @@ public class Food implements Comparable< Food > {
     private String image_url;
     private String name;
     private Double price;
+
+    public Food(){}
+
+    public Food(String line){
+        String[] arr = line.split(",");
+        this.id = Integer.parseInt(arr[0]);
+        this.description = arr[1];
+        this.food_type = Integer.parseInt(arr[2]);
+        this.image_url = arr[3];
+        this.name = arr[4];
+        this.price = Double.parseDouble(arr[5]);
+    }
 
     public Integer getId() {
         return id;
@@ -62,6 +79,11 @@ public class Food implements Comparable< Food > {
         this.price = price;
     }
 
+    public static List<Food> getAll() throws SQLException {
+        String q = "SELECT * FROM food";
+        return DataBaseUtils.executeQueryToBean(Food.class, q);
+    }
+
     @Override
     public int compareTo(Food o) {
         return this.getId().compareTo(o.getId());
@@ -96,5 +118,14 @@ public class Food implements Comparable< Food > {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 '}';
+    }
+
+    public String toCSVString() {
+        return  id + "," +
+                description + "," +
+                food_type + "," +
+                image_url + "," +
+                name + "," +
+                price;
     }
 }
